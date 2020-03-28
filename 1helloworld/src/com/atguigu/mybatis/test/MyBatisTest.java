@@ -1,6 +1,7 @@
 package com.atguigu.mybatis.test;
 
 import com.atguigu.mybatis.bean.Employee;
+import com.atguigu.mybatis.dao.EmployeeMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -17,6 +18,12 @@ import java.io.InputStream;
  * @create 2020年03月28日 18时26分32秒
  */
 public class MyBatisTest {
+
+    private SqlSessionFactory getSqlSessionFactory() throws IOException {
+        String resource = "mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        return new SqlSessionFactoryBuilder().build(inputStream);
+    }
 
     /**
      * 1、根据mybatis的xml配置文件（也称mybatis的全局配置文件）创建一个SqlSessionFactory类的对象实例
@@ -37,8 +44,27 @@ public class MyBatisTest {
         //获取SqlSession实例，它能直接执行已经映射的sql脚本
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
-            Employee employee = sqlSession.selectOne("com.atguigu.mybatis.bean.Employee.selectEmp", 1);
+            Employee employee = sqlSession.selectOne("com.atguigu.mybatis.bean.Employee.getEmpById", 1);
             System.out.println(employee);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test2() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            //动态代理的方式生成dao层Mapper接口实现类的对象
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+
+            System.out.println(employeeMapper);//org.apache.ibatis.binding.MapperProxy@4abdb505
+            System.out.println(employeeMapper.getClass());//class com.sun.proxy.$Proxy4
+            //说明：只要把dao层Mapper接口和mybatis的sql映射文件进行绑定，mybatis会为接口动态创建一个代理对象（即这个接口实现类的对象实例）
+
+            Employee emp = employeeMapper.getEmpById(1);
+            System.out.println(emp);
         } finally {
             sqlSession.close();
         }
