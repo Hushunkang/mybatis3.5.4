@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+namespace：命名空间
+id：唯一标识一个查询/更新sql
+resultType：查询的结果映射到哪个类
+#{id}：从传递过来的参数中取出id值
+-->
+<mapper namespace="com.atguigu.mybatis.bean.Employee">
+
+    <select id="selectEmp" resultType="com.atguigu.mybatis.bean.Employee">
+        select id,last_name lastName,gender,email from tbl_employee where id = #{id}
+    </select>
+
+</mapper>
