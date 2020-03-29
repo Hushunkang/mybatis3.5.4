@@ -64,6 +64,7 @@ public class MyBatisTest {
             //说明：只要把dao层Mapper接口和mybatis的sql映射文件进行绑定，mybatis会为接口动态创建一个代理对象（即这个接口实现类的对象实例）
 
             Employee emp = employeeMapper.getEmpById(1);
+//            Employee emp = employeeMapper.getEmpById(7369);
             System.out.println(emp);
         } finally {
             sqlSession.close();
