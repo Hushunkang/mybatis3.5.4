@@ -24,7 +24,13 @@ resultType：查询的结果映射到哪个类
 
 <!--    void addEmp(Employee emp);-->
     <!-- 注意parameterType可以省略，如果要写就写全类名或者别名 -->
-    <insert id="addEmp" parameterType="emp">
+    <!--
+    获取自增主键的值：
+		mysql支持自增主键，自增主键值的获取，mybatis是利用Statement的getGenreatedKeys方法（原生的jdbc也是这样滴）
+		useGeneratedKeys="true"表示使用自增主键获取主键值策略
+		keyProperty表示指定对应的主键属性，也就是mybatis获取到主键值以后，将这个值封装给javaBean的哪个属性
+	-->
+    <insert id="addEmp" parameterType="emp" useGeneratedKeys="true" keyProperty="id">
         insert into tbl_employee(last_name,gender,email) values(#{lastName},#{gender},#{email})
     </insert>
 
@@ -38,6 +44,5 @@ resultType：查询的结果映射到哪个类
         update tbl_employee set last_name=#{lastName},email=#{email}
         where id=#{id}
     </update>
-
 
 </mapper>

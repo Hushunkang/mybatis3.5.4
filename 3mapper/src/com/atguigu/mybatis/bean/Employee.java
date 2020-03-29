@@ -11,16 +11,16 @@ import org.apache.ibatis.type.Alias;
 @Alias("emp")
 public class Employee {
 
-    private int id;
+    private Integer id;
     private String lastName;
     private char gender;
     private String email;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -51,7 +51,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(int id, String lastName, char gender, String email) {
+    public Employee(Integer id, String lastName, char gender, String email) {
         this.id = id;
         this.lastName = lastName;
         this.gender = gender;

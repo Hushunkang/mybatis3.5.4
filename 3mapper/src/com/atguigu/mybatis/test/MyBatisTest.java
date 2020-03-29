@@ -141,8 +141,20 @@ public class MyBatisTest {
     }
 
     @Test
-    public void test5(){
+    public void test5() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+            Employee employee = new Employee(3,"Jerry",'0',"jerry@atguigu.com");
+            Integer result = employeeMapper.addEmp(employee);
+            System.out.println(result);//0表示添加失败，1表示添加成功
+            System.out.println(employee.getId());//返回自增主键的id
 
+            sqlSession.commit();
+        }finally {
+            sqlSession.close();
+        }
     }
 
     @Test
