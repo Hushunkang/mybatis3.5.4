@@ -2,6 +2,7 @@ package com.atguigu.mybatis.test;
 
 import com.atguigu.mybatis.bean.Employee;
 import com.atguigu.mybatis.dao.EmployeeMapper;
+import com.atguigu.mybatis.dao.EmployeeMapperAnnotation;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -89,5 +90,18 @@ public class MyBatisTest {
      * 		mybatis的全局配置文件：包含数据库连接池信息，事务管理器信息，系统运行环境信息，可选的文件
      * 		mybatis的sql映射文件：保存了每一个sql语句的映射信息，将业务的关键，sql语句抽取出来，不像Hibernate那样黑箱操作不知道里面sql是啥
      */
+
+    @Test
+    public void test3() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapperAnnotation employeeMapperAnnotation = sqlSession.getMapper(EmployeeMapperAnnotation.class);
+            Employee emp = employeeMapperAnnotation.getEmpById(1);
+            System.out.println(emp);
+        } finally {
+            sqlSession.close();
+        }
+    }
 
 }

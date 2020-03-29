@@ -8,6 +8,7 @@ id：唯一标识一个查询/更新sql
 resultType：查询的结果映射到哪个类
 #{id}：从传递过来的参数中取出id值
 -->
+<!--<mapper namespace="com.atguigu.mybatis.bean.Employee">-->
 <mapper namespace="com.atguigu.mybatis.dao.EmployeeMapper">
 
     <select id="getEmpById" resultType="com.atguigu.mybatis.bean.Employee">
