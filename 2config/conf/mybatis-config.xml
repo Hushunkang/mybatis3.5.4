@@ -128,4 +128,6 @@
         <package name="com.atguigu.mybatis.dao"/>
     </mappers>
 
+    <!-- 细节说明：mybatis的全局配置文件中配置标签是有先后顺序约束滴！！！ -->
+
 </configuration>
