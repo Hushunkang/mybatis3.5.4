@@ -31,7 +31,7 @@ public class MyBatisTest {
      * 3、将mybatis的sql映射文件注册到mybatis的全局配置文件中
      * 4、写代码
      * 4.1、根据mybatis的全局配置文件得到一个SqlSessionFactory类的对象实例
-     * 4.2、根据SqlSessionFactory类的对象实例获取SqlSession实例并使用它来执行增删改查操作
+     * 4.2、根据SqlSessionFactory类的对象实例获取SqlSession类的对象实例并使用它来执行增删改查操作
      * 4.3、使用sql唯一标识（namespace+id的策略）来告诉mybatis执行哪一个sql，sql都是保存在mybatis的sql映射文件中
      * @throws IOException
      */
@@ -69,5 +69,24 @@ public class MyBatisTest {
             sqlSession.close();
         }
     }
+
+    /*
+     * 1、接口式编程
+     * 	原先：		I***Dao		====>  ***DaoImpl
+     * 	mybatis：	***Mapper	====>  ***Mapper.xml
+     *
+     * 2、SqlSession对象代表和数据库一个连接会话，用完必须关闭
+     * 3、SqlSession和Connection一样，都是线程不安全的
+     *    因为SqlSession底层还是Connection
+     *    因此，就不要给它定义单例类的成员变量的形式，因为多线程环境下会出现资源竞争（竞争同一个成员变量）的现象从而出现数据安全问题
+     *    因此，每次使用都应该去获取新的SqlSession对象实例
+     * 小知识：用一个数据库连接对象来建立jdbc连接其实就是存在着一个数据库客户端与一个数据库服务端的连接会话
+     * 4、dao层Mapper接口没有实现类，但mybatis会为接口动态创建一个代理对象（即这个接口实现类的对象实例）
+     * 	  前提：把dao层Mapper接口和mybatis的sql映射文件进行绑定
+     * 	  EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+     * 5、两个重要的配置文件：
+     * 		mybatis的全局配置文件：包含数据库连接池信息，事务管理器信息，系统运行环境信息，可选的文件
+     * 		mybatis的sql映射文件：保存了每一个sql语句的映射信息，将业务的关键，sql语句抽取出来，不像Hibernate那样黑箱操作不知道里面sql是啥
+     */
 
 }
