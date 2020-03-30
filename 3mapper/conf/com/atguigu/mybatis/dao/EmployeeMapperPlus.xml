@@ -94,4 +94,16 @@ resultType：查询的结果映射到哪个类
         select * from tbl_employee where id=#{id}
     </select>
 
+    <!-- 使用association进行分步查询的好处还可以进行延迟加载（懒加载、按需加载） -->
+    <!--
+    分步查询的延迟加载：
+    分步查询的前提下，没有使用延迟加载滴时候，我们每次查询员工的同时都会关联的去查询一下部门
+    这样一下子就给分步查询流程中涉及到的所有sql都执行了一哈，这样增加了数据库服务器的压力
+    我们期望能够懒加载，只有真正用到了部门信息的时候我们再去执行分步查询流程中涉及到查询部门的那个sql
+    如何实现分步查询的延迟加载
+    在mybatis的全局配置文件中加上两个配置即可
+    <setting name="lazyLoadingEnabled" value="true"/>
+    <setting name="aggressiveLazyLoading" value="false"/>
+    -->
+
 </mapper>

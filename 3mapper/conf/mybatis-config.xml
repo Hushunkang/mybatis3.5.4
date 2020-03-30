@@ -21,6 +21,9 @@
         <!-- mybatis中开启驼峰命名规则映射 -->
 <!--        <setting name="mapUnderscoreToCamelCase" value="true"/>-->
         <setting name="jdbcTypeForNull" value="NULL"/>
+        <!-- 最好是显示的指定每一个我们需要更改的配置项，即使他是默认滴，也配置一哈，避免版本更新带来问题 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <!--
