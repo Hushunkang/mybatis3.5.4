@@ -66,4 +66,32 @@ resultType：查询的结果映射到哪个类
         where e.d_id=d.id and e.id=#{id}
     </select>
 
+    <!-- 使用association进行分步查询 -->
+    <!--
+    1、根据员工id去员工表中查询员工信息
+	2、根据查询到的员工信息中d_id值去部门表查出部门信息
+	3、将部门信息设置到员工信息当中
+    -->
+    <resultMap id="myEmpByStep" type="com.atguigu.mybatis.bean.Employee">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <!--
+        association表示指定关联的javabean
+        property：关联的属性
+        select：表明关联的属性是调用select指定方法查询的结果
+        column：指定将哪一列的值传给这个方法
+        流程：使用select指定分步查询的方法并查询出关联的javabean，然后赋值给关联的属性
+        -->
+        <association property="dept"
+                     select="com.atguigu.mybatis.dao.DepartmentMapper.getDeptById"
+                     column="d_id">
+        </association>
+    </resultMap>
+
+    <select id="getEmpByIdStep" resultMap="myEmpByStep">
+        select * from tbl_employee where id=#{id}
+    </select>
+
 </mapper>
