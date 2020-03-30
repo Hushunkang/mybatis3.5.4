@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -201,6 +202,49 @@ public class MyBatisTest {
             paramMap.put("tableName","tbl_employee");
             Employee employee = employeeMapper.getEmpByMap(paramMap);
             System.out.println(employee);
+        }finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test9() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+            List<Employee> emps = employeeMapper.getEmpsByLastNameLike("%T%");
+            for (Employee employee : emps) {
+                System.out.println(employee);
+            }
+        }finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test10() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+            Map<String,Object> employee = employeeMapper.getEmpByIdReturnMap(1);
+            System.out.println(employee);
+        }finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test11() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+            Map<Integer,Employee> emps = employeeMapper.getEmpsByLastNameLikeReturnMap("%T%");
+            for(Map.Entry<Integer,Employee> entry : emps.entrySet()){
+                System.out.println("key:" + entry.getKey() + ",value:" + entry.getValue());
+            }
         }finally {
             sqlSession.close();
         }

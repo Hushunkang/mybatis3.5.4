@@ -94,6 +94,17 @@ resultType：查询的结果映射到哪个类
         select * from ${tableName} where last_name=#{lastName} and gender=${gender}
     </select>
 
+    <!-- 查询的结果返回是一个集合的时候，resultType写集合中的数据元素的数据类型即可 -->
+    <select id="getEmpsByLastNameLike" resultType="emp">
+        select * from tbl_employee where last_name like #{lastName}
+    </select>
 
+    <select id="getEmpByIdReturnMap" resultType="map">
+        select * from tbl_employee where id=#{id}
+    </select>
+
+    <select id="getEmpsByLastNameLikeReturnMap" resultType="emp">
+        select * from tbl_employee where last_name like #{lastName}
+    </select>
 
 </mapper>
