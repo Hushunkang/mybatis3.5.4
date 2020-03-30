@@ -90,7 +90,8 @@ resultType：查询的结果映射到哪个类
         </association>
     </resultMap>
 
-    <select id="getEmpByIdStep" resultMap="myEmpByStep">
+<!--    <select id="getEmpByIdStep" resultMap="myEmpByStep">-->
+    <select id="getEmpByIdStep" resultMap="MyEmpDis">
         select * from tbl_employee where id=#{id}
     </select>
 
@@ -112,5 +113,40 @@ resultType：查询的结果映射到哪个类
     一个部门有与之对应的所有员工信息
     注释信息请看DepartmentMapper.xml中说明
     -->
+
+    <!-- mybatis discriminator鉴别器 -->
+    <!--
+    <discriminator javaType=""></discriminator>
+    discriminator鉴别器：mybatis可以使用discriminator判断某列的值，然后根据某列的值改变封装行为
+    以封装Employee为例来说明：
+            如果查出的是女生：就把部门信息查询出来，否则不用
+            如果查出的是男生：把last_name这一列的值赋值给email
+     -->
+    <resultMap id="MyEmpDis" type="com.atguigu.mybatis.bean.Employee">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <!--
+            column：指定判定的列
+            javaType：列所对应的java类型（细节mybatis为每一个常用java类都取了别名，这里用string表示java.lang.String即可）
+        -->
+        <discriminator column="gender" javaType="string">
+            <!-- 0表示女生，resultType指定数据封装的结果类型，不能缺少或者指定resultMap也行 -->
+            <case value="0" resultType="com.atguigu.mybatis.bean.Employee">
+                <association property="dept"
+                             select="com.atguigu.mybatis.dao.DepartmentMapper.getDeptById"
+                             column="d_id">
+                </association>
+            </case>
+            <!-- 1表示男生，把last_name这一列的值赋值给email -->
+            <case value="1" resultType="com.atguigu.mybatis.bean.Employee">
+                <id column="id" property="id"/>
+                <result column="last_name" property="lastName"/>
+                <result column="gender" property="gender"/>
+                <result column="last_name" property="email"/>
+            </case>
+        </discriminator>
+    </resultMap>
 
 </mapper>
