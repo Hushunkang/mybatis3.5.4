@@ -127,39 +127,25 @@ public Object getNamedParams(Object[] args) {
 4、因此可以在mybatis的sql映射文件中通过#{key}的方式获取到传递的sql参数值
 总结：若传递多个sql参数mybatis会给封装成map，为了不混乱，我们可以使用@Param来指定封装时使用的key，#{key}就可以取出map中对应的值
 
-===========================参数值的获取======================================
-#{}：可以获取map中的值或者pojo对象属性的值；
-${}：可以获取map中的值或者pojo对象属性的值；
-
-
-select * from tbl_employee where id=${id} and last_name=#{lastName}
-Preparing: select * from tbl_employee where id=2 and last_name=?
-	区别：
-		#{}:是以预编译的形式，将参数设置到sql语句中；PreparedStatement；防止sql注入
-		${}:取出的值直接拼装在sql语句中；会有安全问题；
-		大多情况下，我们去参数的值都应该去使用#{}；
-
-		原生jdbc不支持占位符的地方我们就可以使用${}进行取值
-		比如分表、排序。。。；按照年份分表拆分
-			select * from ${year}_salary where xxx;
-			select * from tbl_employee order by ${f_name} ${order}
-
-#{}:更丰富的用法：
-	规定参数的一些规则：
-	javaType、 jdbcType、 mode（存储过程）、 numericScale、
-	resultMap、 typeHandler、 jdbcTypeName、 expression（未来准备支持的功能）；
-
-	jdbcType通常需要在某种特定的条件下被设置：
-		在我们数据为null的时候，有些数据库可能不能识别mybatis对null的默认处理。比如Oracle（报错）；
-
-		JdbcType OTHER：无效的类型；因为mybatis对所有的null都映射的是原生Jdbc的OTHER类型，oracle不能正确处理;
-
-		由于全局配置中：jdbcTypeForNull=OTHER；oracle不支持；两种办法
-		1、#{email,jdbcType=OTHER};
-		2、jdbcTypeForNull=NULL
-			<setting name="jdbcTypeForNull" value="NULL"/>
-
-
-
-
-
+mybatis的sql映射文件中参数值的获取
+#{}：可以获取pojo对象属性值或者map中的数据
+${}：可以获取pojo对象属性值或者map中的数据
+mybatis中的#{}和${}区别
+select * from tbl_employee where last_name=#{lastName} and gender=${gender}
+控制台打印的sql相关日志
+DEBUG 03-30 12:32:52,390 ==>  Preparing: select * from tbl_employee where last_name=? and gender=0   (BaseJdbcLogger.java:143)
+DEBUG 03-30 12:32:52,475 ==> Parameters: Tom(String)  (BaseJdbcLogger.java:143)
+DEBUG 03-30 12:32:52,499 <==      Total: 1  (BaseJdbcLogger.java:143)
+#{}：是以预编译的形式，将参数设置到sql语句中，使用PreparedStatement，可以防止sql注入
+${}：是将取出的值直接拼接在sql语句中，会有安全问题
+总结：在大多情况下，我们取参数值都应该去使用#{}，有些情况下使用${}，原生jdbc不支持占位符的方式我们使用${}取参数值，比如说排序操作和分表（按照年份这个字段来分表、拆分表）操作等
+select * from tbl_employee order by ${lastName} ${order};
+select * from ${year}_salary where ***;
+mybatis中的#{}更多丰富的用法
+规定参数的一些规则，如javaType、jdbcType、mode（存储过程）、numericScale、resultMap、typeHandler、jdbcTypeName、expression（未来准备支持的功能）
+jdbcType有时候需要在某种特定的场合下设置，如在传递的sql参数为null时，Oracle数据库不能识别mybatis对null的默认处理（org.apache.ibatis.type.JdbcType这个枚举类中这个常量OTHER(Types.OTHER)），就会报错，MySQL数据库是可以滴
+原理是mybatis对所有null值映射的是原生jdbc的OTHER类型，Oracle数据库不能正确处理，导致报错
+解决办法
+由于全局配置中：jdbcTypeForNull=OTHER；oracle不支持；两种办法
+方法一、#{lastName,jdbcType=NULL}
+方法二、在mybatis的全局配置文件中设置<setting name="jdbcTypeForNull" value="NULL"/>

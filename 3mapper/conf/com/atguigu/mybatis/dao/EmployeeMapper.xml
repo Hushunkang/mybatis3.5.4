@@ -63,7 +63,7 @@ resultType：查询的结果映射到哪个类
         <!-- 插入时的主键是从序列中拿到的 -->
         <!-- BEFORE -->
         insert into EMP(EMPNO,ENAME)
-        values(#{id},#{lastName})
+        values(#{id},#{lastName<!-- ,jdbcType=NULL -->})
         <!-- AFTER -->
         <!--
         insert into employees(EMPNO,ENAME)
@@ -91,7 +91,7 @@ resultType：查询的结果映射到哪个类
     </select>
 
     <select id="getEmpByMap" resultType="emp">
-        select * from tbl_employee where last_name=#{lastName} and gender=#{gender}
+        select * from ${tableName} where last_name=#{lastName} and gender=${gender}
     </select>
 
 

@@ -198,6 +198,7 @@ public class MyBatisTest {
             Map<String,Object> paramMap = new HashMap<>();
             paramMap.put("lastName","Tom");
             paramMap.put("gender",'0');
+            paramMap.put("tableName","tbl_employee");
             Employee employee = employeeMapper.getEmpByMap(paramMap);
             System.out.println(employee);
         }finally {
