@@ -1,5 +1,7 @@
 package com.atguigu.mybatis.bean;
 
+import java.util.List;
+
 /**
  * @author hskBeginner Email：2752962035@qq.com
  * @version 1.0
@@ -10,6 +12,15 @@ public class Department {
 
     private Integer id;
     private String departmentName;
+    private List<Employee> emps;
+
+    public List<Employee> getEmps() {
+        return emps;
+    }
+
+    public void setEmps(List<Employee> emps) {
+        this.emps = emps;
+    }
 
     public Integer getId() {
         return id;

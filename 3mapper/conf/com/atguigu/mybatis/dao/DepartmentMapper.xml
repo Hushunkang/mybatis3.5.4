@@ -14,4 +14,23 @@ resultType：查询的结果映射到哪个类
         select id,dept_name departmentName from tbl_dept where id=#{id}
     </select>
 
+    <resultMap id="myDept" type="com.atguigu.mybatis.bean.Department">
+        <id column="did" property="id"/>
+        <result column="dept_name" property="departmentName"/>
+        <collection property="emps" ofType="com.atguigu.mybatis.bean.Employee">
+            <id column="eid" property="id"/>
+            <id column="last_name" property="lastName"/>
+            <id column="gender" property="gender"/>
+            <id column="email" property="email"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDeptByIdPlus" resultMap="myDept">
+        select d.id did,d.dept_name dept_name,
+               e.id eid,e.last_name last_name,e.email email,e.gender gender
+        from tbl_dept d
+        left join tbl_employee e on d.id=e.d_id
+        where d.id=#{id}
+    </select>
+
 </mapper>

@@ -106,4 +106,11 @@ resultType：查询的结果映射到哪个类
     <setting name="aggressiveLazyLoading" value="false"/>
     -->
 
+    <!--
+    场景二：
+    查询部门的时候查询部门下面所有员工
+    一个部门有与之对应的所有员工信息
+    注释信息请看DepartmentMapper.xml中说明
+    -->
+
 </mapper>

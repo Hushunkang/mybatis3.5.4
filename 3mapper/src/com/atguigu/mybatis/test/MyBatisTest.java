@@ -1,6 +1,8 @@
 package com.atguigu.mybatis.test;
 
+import com.atguigu.mybatis.bean.Department;
 import com.atguigu.mybatis.bean.Employee;
+import com.atguigu.mybatis.dao.DepartmentMapper;
 import com.atguigu.mybatis.dao.EmployeeMapper;
 import com.atguigu.mybatis.dao.EmployeeMapperAnnotation;
 import com.atguigu.mybatis.dao.EmployeeMapperPlus;
@@ -264,6 +266,20 @@ public class MyBatisTest {
 //            System.out.println(employee.getDept());
             System.out.println(employee.getId());
 //            System.out.println(employee.getDept());
+        }finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test13() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            DepartmentMapper departmentMapper = sqlSession.getMapper(DepartmentMapper.class);
+            Department department = departmentMapper.getDeptByIdPlus(1);
+            System.out.println(department);
+            System.out.println(department.getEmps());
         }finally {
             sqlSession.close();
         }
