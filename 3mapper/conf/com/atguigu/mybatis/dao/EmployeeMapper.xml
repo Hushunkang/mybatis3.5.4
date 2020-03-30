@@ -30,8 +30,45 @@ resultType：查询的结果映射到哪个类
 		useGeneratedKeys="true"表示使用自增主键获取主键值策略
 		keyProperty表示指定对应的主键属性，也就是mybatis获取到主键值以后，将这个值封装给javaBean的哪个属性
 	-->
-    <insert id="addEmp" parameterType="emp" useGeneratedKeys="true" keyProperty="id">
+    <insert id="addEmp" parameterType="emp" useGeneratedKeys="true" keyProperty="id" databaseId="mysql">
         insert into tbl_employee(last_name,gender,email) values(#{lastName},#{gender},#{email})
+    </insert>
+
+    <!--
+	获取非自增主键的值：
+		Oracle不支持自增主键，Oracle使用序列来模拟自增主键
+		每次插入数据的主键是从序列中拿到的值，那么如何获取到这个值呢？
+	 -->
+    <insert id="addEmp" databaseId="oracle">
+        <!--
+        keyProperty：查询出来的主键值封装给javaBean的哪个属性
+        order="BEFORE"：当前sql在插入sql之前运行
+               "AFTER"：当前sql在插入sql之后运行
+        resultType：查出的数据的返回值类型
+
+        BEFORE运行顺序（建议使用）：
+            先运行selectKey查询id的sql，查出id值封装给javaBean的id属性，再运行插入的sql，就可以取出id属性对应的值
+        AFTER运行顺序：
+            先运行插入的sql（从序列中取出新值作为id），再运行selectKey查询id的sql
+        -->
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            <!-- 编写查询主键的sql语句 -->
+            <!-- BEFORE -->
+            select SEQ_EMP.nextval from dual
+            <!-- AFTER -->
+            <!--
+             select SEQ_EMP.currval from dual
+            -->
+        </selectKey>
+        <!-- 插入时的主键是从序列中拿到的 -->
+        <!-- BEFORE -->
+        insert into EMP(EMPNO,ENAME)
+        values(#{id},#{lastName})
+        <!-- AFTER -->
+        <!--
+        insert into employees(EMPNO,ENAME)
+        values(SEQ_EMP.nextval,#{lastName})
+        -->
     </insert>
 
     <!--    void deleteEmp(Employee emp);-->

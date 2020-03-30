@@ -13,7 +13,7 @@ public class Employee {
 
     private Integer id;
     private String lastName;
-    private char gender;
+    private Character gender;
     private String email;
 
     public Integer getId() {
@@ -32,11 +32,11 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    public char getGender() {
+    public Character getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(Character gender) {
         this.gender = gender;
     }
 
@@ -51,7 +51,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(Integer id, String lastName, char gender, String email) {
+    public Employee(Integer id, String lastName, Character gender, String email) {
         this.id = id;
         this.lastName = lastName;
         this.gender = gender;

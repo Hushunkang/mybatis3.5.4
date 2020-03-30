@@ -158,8 +158,37 @@ public class MyBatisTest {
     }
 
     @Test
-    public void test6(){
+    public void test6() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+            Employee employee = new Employee(null,"Jerry",null,null);
+            Integer result = employeeMapper.addEmp(employee);
+            System.out.println(result);
+            System.out.println(employee.getId());
 
+            sqlSession.commit();
+        }finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test7() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+            Employee employee = new Employee(null,"Jerry2",null,null);
+            Integer result = employeeMapper.addEmp(employee);
+            System.out.println(result);
+            System.out.println(employee.getId());
+
+            sqlSession.commit();
+        }finally {
+            sqlSession.close();
+        }
     }
 
 }
