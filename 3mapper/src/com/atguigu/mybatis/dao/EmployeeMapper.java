@@ -38,4 +38,6 @@ public interface EmployeeMapper {
     @MapKey("id")//@MapKey注解告诉mybatis，把查询的结果封装成map时，map中的key是pojo对象的哪个属性
     Map<Integer,Employee> getEmpsByLastNameLikeReturnMap(String lastName);
 
+    List<Employee> getEmpsByDeptId(Integer deptId);
+
 }

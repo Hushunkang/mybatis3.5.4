@@ -107,4 +107,8 @@ resultType：查询的结果映射到哪个类
         select * from tbl_employee where last_name like #{lastName}
     </select>
 
+    <select id="getEmpsByDeptId" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from tbl_employee where d_id=#{deptId}
+    </select>
+
 </mapper>

@@ -33,4 +33,17 @@ resultType：查询的结果映射到哪个类
         where d.id=#{id}
     </select>
 
+    <resultMap id="myDeptStep" type="com.atguigu.mybatis.bean.Department">
+        <id column="id" property="id"></id>
+        <result column="dept_name" property="departmentName"></result>
+        <collection property="emps"
+                    select="com.atguigu.mybatis.dao.EmployeeMapper.getEmpsByDeptId"
+                    column="id">
+        </collection>
+    </resultMap>
+    
+    <select id="getDeptByIdStep" resultMap="myDeptStep">
+        select id,dept_name from tbl_dept where id=#{id}
+    </select>
+
 </mapper>
