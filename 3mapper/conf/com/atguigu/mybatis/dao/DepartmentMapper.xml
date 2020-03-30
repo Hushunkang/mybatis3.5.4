@@ -38,12 +38,20 @@ resultType：查询的结果映射到哪个类
         <result column="dept_name" property="departmentName"></result>
         <collection property="emps"
                     select="com.atguigu.mybatis.dao.EmployeeMapper.getEmpsByDeptId"
-                    column="id">
+                    column="{deptId=id}" fetchType="lazy">
         </collection>
     </resultMap>
     
     <select id="getDeptByIdStep" resultMap="myDeptStep">
         select id,dept_name from tbl_dept where id=#{id}
     </select>
+
+    <!-- 扩展：分步查询如果想传递多列的值应该怎么做 -->
+    <!--
+    解决办法：将多列的数据封装成map进行传递，{key1=column1,key2=column2...}
+    fetchType="lazy"
+			   lazy：延迟加载
+			   eager：立即加载
+    -->
 
 </mapper>
