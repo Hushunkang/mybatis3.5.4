@@ -3,6 +3,7 @@ package com.atguigu.mybatis.test;
 import com.atguigu.mybatis.bean.Employee;
 import com.atguigu.mybatis.dao.EmployeeMapper;
 import com.atguigu.mybatis.dao.EmployeeMapperAnnotation;
+import com.atguigu.mybatis.dao.EmployeeMapperPlus;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -245,6 +246,19 @@ public class MyBatisTest {
             for(Map.Entry<Integer,Employee> entry : emps.entrySet()){
                 System.out.println("key:" + entry.getKey() + ",value:" + entry.getValue());
             }
+        }finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test12() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapperPlus employeeMapperPlus = sqlSession.getMapper(EmployeeMapperPlus.class);
+            Employee employee = employeeMapperPlus.getEmpById(1);
+            System.out.println(employee);
         }finally {
             sqlSession.close();
         }

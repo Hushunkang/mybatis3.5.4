@@ -19,7 +19,7 @@
 	-->
     <settings>
         <!-- mybatis中开启驼峰命名规则映射 -->
-        <setting name="mapUnderscoreToCamelCase" value="true"/>
+<!--        <setting name="mapUnderscoreToCamelCase" value="true"/>-->
         <setting name="jdbcTypeForNull" value="NULL"/>
     </settings>
 
