@@ -82,4 +82,18 @@ resultType：查询的结果映射到哪个类
         where id=#{id}
     </update>
 
+<!--    <select id="getEmpByLastNameAndGender" resultType="com.atguigu.mybatis.bean.Employee">-->
+<!--        select * from tbl_employee where last_name=#{param1} and gender=#{param2}-->
+<!--    </select>-->
+
+    <select id="getEmpByLastNameAndGender" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from tbl_employee where last_name=#{lastName} and gender=#{gender} and email=#{arg2}
+    </select>
+
+    <select id="getEmpByMap" resultType="emp">
+        select * from tbl_employee where last_name=#{lastName} and gender=#{gender}
+    </select>
+
+
+
 </mapper>

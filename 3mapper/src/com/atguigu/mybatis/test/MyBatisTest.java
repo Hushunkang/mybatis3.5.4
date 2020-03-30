@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author hskBeginner Email：2752962035@qq.com
@@ -57,7 +59,7 @@ public class MyBatisTest {
         SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
-            //动态代理的方式生成dao层Mapper接口实现类的对象
+            //动态代理的方式生成dao层Mapper接口实现类的对象（即代理实例）
             EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
 
             System.out.println(employeeMapper);//org.apache.ibatis.binding.MapperProxy@4abdb505
@@ -180,12 +182,24 @@ public class MyBatisTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
-            Employee employee = new Employee(null,"Jerry2",null,null);
-            Integer result = employeeMapper.addEmp(employee);
-            System.out.println(result);
-            System.out.println(employee.getId());
+            Employee employee = employeeMapper.getEmpByLastNameAndGender("Tom", '0',"tom@atguigu.com");
+            System.out.println(employee);
+        }finally {
+            sqlSession.close();
+        }
+    }
 
-            sqlSession.commit();
+    @Test
+    public void test8() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapper employeeMapper = sqlSession.getMapper(EmployeeMapper.class);
+            Map<String,Object> paramMap = new HashMap<>();
+            paramMap.put("lastName","Tom");
+            paramMap.put("gender",'0');
+            Employee employee = employeeMapper.getEmpByMap(paramMap);
+            System.out.println(employee);
         }finally {
             sqlSession.close();
         }

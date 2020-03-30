@@ -1,6 +1,9 @@
 package com.atguigu.mybatis.dao;
 
 import com.atguigu.mybatis.bean.Employee;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Map;
 
 /**
  * @author hskBeginner Email：2752962035@qq.com
@@ -19,5 +22,9 @@ public interface EmployeeMapper {
     Boolean updateEmp(Employee emp);
 
 //    void updateEmp(Employee emp);
+
+    Employee getEmpByLastNameAndGender(@Param("lastName") String lastName, @Param("gender") Character gender, String email);
+
+    Employee getEmpByMap(Map paramMap);
 
 }

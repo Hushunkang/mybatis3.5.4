@@ -1,0 +1,165 @@
+不存在@Param注解标记的sql参数并且传递单个sql参数：mybatis不会做特殊处理，#{参数名}表示取出参数值，其中参数名可以任意取名字
+
+有@Param注解标记的sql参数或者传递多个sql参数：mybatis会做特殊处理，多个参数会被封装成一个map
+		      key：param1...paramN，或者使用参数索引（Java中滴索引从0开始）
+		      value：传递的参数值
+	          #{参数名}表示从map中获取指定key的value
+
+异常：
+org.apache.ibatis.binding.BindingException:
+Parameter 'id' not found.
+Available parameters are [1, 0, param1, param2]
+
+想实现的效果，不要使用#{param1}，#{param2}这种方式可读性很差：
+方法：Employee getEmpByLastNameAndGender(String lastName,Character gender);
+取值：#{lastName}，#{gender}
+
+【命名参数】：
+明确指定将sql参数封装成map的key，@Param("lastName")
+多个参数会被封装成一个map
+key：使用@Param注解指定值
+value：参数值
+#{key}表示根据map中的key取出对应value
+
+pojo：
+若传递多个参数正好是我们业务逻辑的数据模型，我们就可以直接传入pojo，#{属性名}表示取出传入的pojo的属性值
+
+map：
+若传递多个参数不是业务逻辑的数据模型，没有对应的pojo，又不经常使用（没必要造一个pojo），为了方便，也可以传入map
+	#{key}：取出map中对应的值
+
+to：
+若传递多个参数不是业务逻辑的数据模型，但是经常要使用，推荐来编写一个to（Transfer Object）数据传输对象
+Page{
+	int currentPage;//分页时的当前页
+	int pageSize;//分页时的每页大小
+}
+
+思考
+Employee getEmp(@Param("lastName")String lastName,Character gender);
+取值：lastName===>#{lastName/param1}，gender===>#{param2}
+
+Employee getEmp(String lastName,@Param("e")Employee emp);
+取值：lastName===>#{param1}，gender===>#{param2.gender/e.gender}
+
+特别注意：如果是数组类型或者集合Collection（List、Set）类型mybatis也会特殊处理，也是把传入的数组或者集合Collection（List、Set）封装在map中
+		 key：数组（array），Collection（collection），如果是List还可以使用这个key（list）
+Employee getEmpById(List<Integer> ids);
+取值：取出集合中第一个数据元素的id值#{list[0]}，不能写成#{ids[0]}
+
+深入mybatis源码，浅出结论，mybatis如何处理sql参数
+结合具体例子来分析源码，若dao层Mapper接口中存在这样滴方法Employee getEmp(@Param("lastName")String lastName,@Param("gender")Character gender,String email);
+大概的执行流程：
+说明：mybatis源码中的ParamNameResolver类表示mybatis的参数名解析器用于解析sql参数并将其封装成map
+1、ParamNameResolver类中成员变量names在其构造器public ParamNameResolver(Configuration config, Method method)中完成初始化
+private final SortedMap<Integer, String> names;
+public ParamNameResolver(Configuration config, Method method) {
+    final Class<?>[] paramTypes = method.getParameterTypes();
+    final Annotation[][] paramAnnotations = method.getParameterAnnotations();
+    final SortedMap<Integer, String> map = new TreeMap<>();
+    int paramCount = paramAnnotations.length;
+    // get names from @Param annotations
+    for (int paramIndex = 0; paramIndex < paramCount; paramIndex++) {
+      if (isSpecialParameter(paramTypes[paramIndex])) {
+        // skip special parameters
+        continue;
+      }
+      String name = null;
+      for (Annotation annotation : paramAnnotations[paramIndex]) {
+        if (annotation instanceof Param) {
+          hasParamAnnotation = true;
+          name = ((Param) annotation).value();
+          break;
+        }
+      }
+      if (name == null) {
+        // @Param was not specified.
+        if (config.isUseActualParamName()) {
+          name = getActualParamName(method, paramIndex);
+        }
+        if (name == null) {
+          // use the parameter index as the name ("0", "1", ...)
+          // gcode issue #71
+          name = String.valueOf(map.size());
+        }
+      }
+      map.put(paramIndex, name);
+    }
+    names = Collections.unmodifiableSortedMap(map);
+  }
+names：{0=lastName,1=gender,2=arg2}（key-value：0->lastName,1->gender,2->arg2）
+1.1、获取每一个标记了@Param注解的值，此处即为lastName，gender，然后赋值给name
+1.2、每解析一个sql参数会给map中保存数据，数据是（key：参数索引，value：参数值）
+说明：上述的参数值有一些情况
+情况1：若sql参数标记了@Param注解，那么参数值就是@Param注解的value
+情况2：若sql参数没有标记@Param注解
+情况2_1：如果在mybatis的全局配置文件中设置了useActualParamName，即是否使用dao层Mapper接口中方法的形参的参数名作为此处的name，但必须使用jdk1.8及以上版本，本例子中没配置
+情况2_2：使用map.size()（即为use the parameter index as the name ("0", "1", ...)，处理第一个sql参数的时候是0，处理第二个sql参数的时候是1，依次类推）作为此处的name
+2、最后赋值给names（即names的初始化），names = Collections.unmodifiableSortedMap(map);
+3、ParamNameResolver类中public Object getNamedParams(Object[] args)方法
+args：Object[]类型的数组，本例子中args里面有三个数据元素，分别是"Tom"、'1'、"tom@atguigu.com"
+public Object getNamedParams(Object[] args) {
+    final int paramCount = names.size();
+    //没有传递sql参数，返回null
+    if (args == null || paramCount == 0) {
+      return null;
+      //不存在@Param注解标记的sql参数并且传递单个sql参数，不需要封装成map，返回args[names.firstKey()]，即args[0]
+    } else if (!hasParamAnnotation && paramCount == 1) {
+      return args[names.firstKey()];
+      //有@Param注解标记的sql参数或者传递多个sql参数，需要封装成map
+    } else {
+      final Map<String, Object> param = new ParamMap<>();
+      int i = 0;
+      for (Map.Entry<Integer, String> entry : names.entrySet()) {
+        param.put(entry.getValue(), args[entry.getKey()]);
+        // add generic param names (param1, param2, ...)
+        final String genericParamName = GENERIC_NAME_PREFIX + (i + 1);
+        // ensure not to overwrite parameter named with @Param
+        if (!names.containsValue(genericParamName)) {
+          param.put(genericParamName, args[entry.getKey()]);
+        }
+        i++;
+      }
+      return param;
+    }
+  }
+本例子中传递多个sql参数mybatis最终封装成map的值为{lastName=Tom,arg2=tom@atguigu.com,gender=0,param3=tom@atguigu.com,param1=Tom,param2=0}
+4、因此可以在mybatis的sql映射文件中通过#{key}的方式获取到传递的sql参数值
+总结：若传递多个sql参数mybatis会给封装成map，为了不混乱，我们可以使用@Param来指定封装时使用的key，#{key}就可以取出map中对应的值
+
+===========================参数值的获取======================================
+#{}：可以获取map中的值或者pojo对象属性的值；
+${}：可以获取map中的值或者pojo对象属性的值；
+
+
+select * from tbl_employee where id=${id} and last_name=#{lastName}
+Preparing: select * from tbl_employee where id=2 and last_name=?
+	区别：
+		#{}:是以预编译的形式，将参数设置到sql语句中；PreparedStatement；防止sql注入
+		${}:取出的值直接拼装在sql语句中；会有安全问题；
+		大多情况下，我们去参数的值都应该去使用#{}；
+
+		原生jdbc不支持占位符的地方我们就可以使用${}进行取值
+		比如分表、排序。。。；按照年份分表拆分
+			select * from ${year}_salary where xxx;
+			select * from tbl_employee order by ${f_name} ${order}
+
+#{}:更丰富的用法：
+	规定参数的一些规则：
+	javaType、 jdbcType、 mode（存储过程）、 numericScale、
+	resultMap、 typeHandler、 jdbcTypeName、 expression（未来准备支持的功能）；
+
+	jdbcType通常需要在某种特定的条件下被设置：
+		在我们数据为null的时候，有些数据库可能不能识别mybatis对null的默认处理。比如Oracle（报错）；
+
+		JdbcType OTHER：无效的类型；因为mybatis对所有的null都映射的是原生Jdbc的OTHER类型，oracle不能正确处理;
+
+		由于全局配置中：jdbcTypeForNull=OTHER；oracle不支持；两种办法
+		1、#{email,jdbcType=OTHER};
+		2、jdbcTypeForNull=NULL
+			<setting name="jdbcTypeForNull" value="NULL"/>
+
+
+
+
+
