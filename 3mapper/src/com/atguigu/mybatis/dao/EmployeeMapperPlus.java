@@ -12,4 +12,6 @@ public interface EmployeeMapperPlus {
 
     Employee getEmpById(Integer id);
 
+    Employee getEmpAndDept(Integer id);
+
 }

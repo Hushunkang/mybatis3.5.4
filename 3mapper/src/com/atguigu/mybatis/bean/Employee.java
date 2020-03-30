@@ -15,6 +15,15 @@ public class Employee {
     private String lastName;
     private Character gender;
     private String email;
+    private Department dept;
+
+    public Department getDept() {
+        return dept;
+    }
+
+    public void setDept(Department dept) {
+        this.dept = dept;
+    }
 
     public Integer getId() {
         return id;
