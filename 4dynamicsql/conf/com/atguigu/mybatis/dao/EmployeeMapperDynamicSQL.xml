@@ -95,4 +95,37 @@
         </where>
     </select>
 
+    <update id="updateEmp">
+        <!-- set标签的使用，可以去掉多余的,逗号 -->
+        update tbl_employee
+        <set>
+            <if test="lastName != null">
+                last_name=#{lastName},
+            </if>
+            <if test="gender != null">
+                gender=#{gender},
+            </if>
+            <if test="email != null">
+                email=#{email},
+            </if>
+        </set>
+        where id=#{id}
+        <!--
+        Trim标签：
+        update tbl_employee
+        <trim prefix="set" suffixOverrides=",">
+            <if test="lastName!=null">
+                last_name=#{lastName},
+            </if>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender},
+            </if>
+        </trim>
+        where id=#{id}
+        -->
+    </update>
+
 </mapper>
