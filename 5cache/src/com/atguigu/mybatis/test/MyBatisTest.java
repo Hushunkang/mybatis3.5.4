@@ -84,11 +84,11 @@ public class MyBatisTest {
      * 	                    设置成SESSION表示当前sql会话的所有数据保存在sql会话缓存中
      * 					    设置成STATEMENT表示可以禁用一级缓存
      *
-     * 第三方缓存整合：
-     *		1）、导入第三方缓存包即可；
-     *		2）、导入与第三方缓存整合的适配包；官方有；
-     *		3）、mapper.xml中使用自定义缓存
-     *		<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+     * mybatis与第三方缓存整合：
+     *	1）、导入第三方缓存包即可
+     *	2）、导入与第三方缓存整合的适配包，官网有包
+     *	3）、***Mapper.xml中使用自定义缓存
+     *		 <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
      *
      *
      */
