@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+namespace：命名空间，指定dao层Mapper接口的全类名
+id：唯一标识一个查询/更新sql
+resultType：查询的结果映射到哪个类
+#{id}：从传递过来的参数中取出id值
+-->
+<mapper namespace="com.atguigu.mybatis.dao.DepartmentMapper">
+
+    <select id="getDeptById" resultType="com.atguigu.mybatis.bean.Department">
+        select id,dept_name departmentName from tbl_dept where id=#{id}
+    </select>
+
+    <resultMap id="myDept" type="com.atguigu.mybatis.bean.Department">
+        <id column="did" property="id"/>
+        <result column="dept_name" property="departmentName"/>
+        <collection property="emps" ofType="com.atguigu.mybatis.bean.Employee">
+            <id column="eid" property="id"/>
+            <id column="last_name" property="lastName"/>
+            <id column="gender" property="gender"/>
+            <id column="email" property="email"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDeptByIdPlus" resultMap="myDept">
+        select d.id did,d.dept_name dept_name,
+               e.id eid,e.last_name last_name,e.email email,e.gender gender
+        from tbl_dept d
+        left join tbl_employee e on d.id=e.d_id
+        where d.id=#{id}
+    </select>
+
+    <resultMap id="myDeptStep" type="com.atguigu.mybatis.bean.Department">
+        <id column="id" property="id"></id>
+        <result column="dept_name" property="departmentName"></result>
+        <collection property="emps"
+                    select="com.atguigu.mybatis.dao.EmployeeMapper.getEmpsByDeptId"
+                    column="{deptId=id}" fetchType="lazy">
+        </collection>
+    </resultMap>
+    
+    <select id="getDeptByIdStep" resultMap="myDeptStep">
+        select id,dept_name from tbl_dept where id=#{id}
+    </select>
+
+    <!-- 扩展：分步查询如果想传递多列的值应该怎么做 -->
+    <!--
+    解决办法：将多列的数据封装成map进行传递，{key1=column1,key2=column2...}
+    fetchType="lazy"
+			   lazy：延迟加载
+			   eager：立即加载
+    -->
+
+</mapper>

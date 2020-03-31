@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+namespace：命名空间，指定dao层Mapper接口的全类名
+id：唯一标识一个查询/更新sql
+resultType：查询的结果映射到哪个类
+#{id}：从传递过来的参数中取出id值
+-->
+<mapper namespace="com.atguigu.mybatis.dao.EmployeeMapper">
+
+    <select id="getEmpById" resultType="emp">
+        select * from tbl_employee where id = #{id}
+    </select>
+
+    <select id="getEmpById" resultType="emp" databaseId="mysql">
+        select * from tbl_employee where id = #{id}
+    </select>
+
+    <select id="getEmpById" resultType="emp" databaseId="oracle">
+        select EMPNO id,ENAME lastName from EMP where EMPNO = #{id}
+    </select>
+
+<!--    void addEmp(Employee emp);-->
+    <!-- 注意parameterType可以省略，如果要写就写全类名或者别名 -->
+    <!--
+    获取自增主键的值：
+		mysql支持自增主键，自增主键值的获取，mybatis是利用Statement的getGenreatedKeys方法（原生的jdbc也是这样滴）
+		useGeneratedKeys="true"表示使用自增主键获取主键值策略
+		keyProperty表示指定对应的主键属性，也就是mybatis获取到主键值以后，将这个值封装给javaBean的哪个属性
+	-->
+    <insert id="addEmp" parameterType="emp" useGeneratedKeys="true" keyProperty="id" databaseId="mysql">
+        insert into tbl_employee(last_name,gender,email) values(#{lastName},#{gender},#{email})
+    </insert>
+
+    <!--
+	获取非自增主键的值：
+		Oracle不支持自增主键，Oracle使用序列来模拟自增主键
+		每次插入数据的主键是从序列中拿到的值，那么如何获取到这个值呢？
+	 -->
+    <insert id="addEmp" databaseId="oracle">
+        <!--
+        keyProperty：查询出来的主键值封装给javaBean的哪个属性
+        order="BEFORE"：当前sql在插入sql之前运行
+               "AFTER"：当前sql在插入sql之后运行
+        resultType：查出的数据的返回值类型
+
+        BEFORE运行顺序（建议使用）：
+            先运行selectKey查询id的sql，查出id值封装给javaBean的id属性，再运行插入的sql，就可以取出id属性对应的值
+        AFTER运行顺序：
+            先运行插入的sql（从序列中取出新值作为id），再运行selectKey查询id的sql
+        -->
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            <!-- 编写查询主键的sql语句 -->
+            <!-- BEFORE -->
+            select SEQ_EMP.nextval from dual
+            <!-- AFTER -->
+            <!--
+             select SEQ_EMP.currval from dual
+            -->
+        </selectKey>
+        <!-- 插入时的主键是从序列中拿到的 -->
+        <!-- BEFORE -->
+        insert into EMP(EMPNO,ENAME)
+        values(#{id},#{lastName<!-- ,jdbcType=NULL -->})
+        <!-- AFTER -->
+        <!--
+        insert into employees(EMPNO,ENAME)
+        values(SEQ_EMP.nextval,#{lastName})
+        -->
+    </insert>
+
+    <!--    void deleteEmp(Employee emp);-->
+    <delete id="deleteEmp">
+        delete from tbl_employee where id=#{id}
+    </delete>
+
+    <!--    void updateEmp(Employee emp);-->
+    <update id="updateEmp">
+        update tbl_employee set last_name=#{lastName},email=#{email}
+        where id=#{id}
+    </update>
+
+<!--    <select id="getEmpByLastNameAndGender" resultType="com.atguigu.mybatis.bean.Employee">-->
+<!--        select * from tbl_employee where last_name=#{param1} and gender=#{param2}-->
+<!--    </select>-->
+
+    <select id="getEmpByLastNameAndGender" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from tbl_employee where last_name=#{lastName} and gender=#{gender} and email=#{arg2}
+    </select>
+
+    <select id="getEmpByMap" resultType="emp">
+        select * from ${tableName} where last_name=#{lastName} and gender=${gender}
+    </select>
+
+    <!-- 查询的结果返回是一个集合的时候，resultType写集合中的数据元素的数据类型即可 -->
+    <select id="getEmpsByLastNameLike" resultType="emp">
+        select * from tbl_employee where last_name like #{lastName}
+    </select>
+
+    <select id="getEmpByIdReturnMap" resultType="map">
+        select * from tbl_employee where id=#{id}
+    </select>
+
+    <select id="getEmpsByLastNameLikeReturnMap" resultType="emp">
+        select * from tbl_employee where last_name like #{lastName}
+    </select>
+
+    <select id="getEmpsByDeptId" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from tbl_employee where d_id=#{deptId}
+    </select>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.dao.EmployeeMapperDynamicSQL">
+
+    <!-- 查询员工，要求，传入的sql参数employee携带了哪些字段，查询条件就带上这些字段 -->
+    <!--
+    • if：表示如果，判断标签
+    • choose（when，otherwise）：表示分支选择，相当于带了break语句的switch-case语句体
+      如果带了id就用id查，如果带了lastName就用last_name查，只会进入选择结构的其中一个分支
+    • trim：表示字符串截取（where（封装查询条件），set（封装修改条件））
+    • foreach：遍历集合
+	 -->
+    <select id="getEmpsByConditionIf" resultType="emp">
+        select * from tbl_employee
+        <!-- where -->
+        <where>
+            <!--
+            test：表示判断的表达式（用的是OGNL表达式，Apache下的一个开源项目，类似于JSTL）
+            OGNL表达式可以参照ppt课件或者官方文档来了解学习
+            <if test="id != null">表示从sql参数中取值来进行判断
+            遇见xml文件中的特殊字符应该去写其对应的转义字符
+            -->
+            <if test="id != null">
+                id=#{id}
+            </if>
+            <!-- <if test="lastName != null &amp;&amp; lastName != &quot;&quot;"> -->
+            <if test="lastName != null and lastName != ''">
+                and last_name like #{lastName}
+            </if>
+            <if test="email != null and email.trim() != ''">
+                and email=#{email}
+            </if>
+            <!--
+            OGNL表达式会进行数字与字符串转换判断  0 == "0"
+            如果gender为char类型，必须要这样写gender == '0'
+            如果gender为String类型
+                情况1：纯数字类型的字符串可以省略掉双引号，若要加双引号也可以，但必须是转移字符形式的双双引号，即&quot;&quot;
+                情况2：非纯数字类型的字符串，用双单引号，报错方案不可取
+                情况3：非纯数字类型的字符串，用双双引号，但必须是转移字符形式的双双引号，即&quot;&quot;
+            总结：如果是字符类型的数据做判断，使用双单引号
+                 如果是字符串类型的数据做判断的时候，用转移字符形式的双双引号是肯定不会错滴
+            -->
+            <if test="gender == '0' or gender == '1'">
+                and gender=#{gender}
+            </if>
+        </where>
+    </select>
+
+</mapper>
