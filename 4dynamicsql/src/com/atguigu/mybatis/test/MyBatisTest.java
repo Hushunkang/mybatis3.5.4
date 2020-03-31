@@ -32,8 +32,14 @@ public class MyBatisTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
-            Employee employee = new Employee(1,"%m%",'0',"   ");
+            Employee employee = new Employee(1,"%m%",null,"   ");
             List<Employee> emps = employeeMapperDynamicSQLMapper.getEmpsByConditionIf(employee);
+
+            //查询的时候如果某些条件没带可能sql拼装会有问题
+            //解决方案1、给where后面加上1=1，后面每个if分支都是and ***
+            //解决方案2、mybatis使用where标签来将所有的查询条件包括在内，mybatis就会将where标签中拼装的sql脚本，多出来的and或者or自动去掉
+            //细节：where标签只会去掉第一个多出来的and或者or
+
             for (Employee emp : emps) {
                 System.out.println(emp);
             }

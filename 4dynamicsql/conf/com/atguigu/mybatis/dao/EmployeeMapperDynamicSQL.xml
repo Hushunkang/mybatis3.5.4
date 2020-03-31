@@ -23,7 +23,7 @@
             遇见xml文件中的特殊字符应该去写其对应的转义字符
             -->
             <if test="id != null">
-                id=#{id}
+                and id=#{id}
             </if>
             <!-- <if test="lastName != null &amp;&amp; lastName != &quot;&quot;"> -->
             <if test="lastName != null and lastName != ''">
