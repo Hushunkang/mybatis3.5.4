@@ -61,7 +61,7 @@
 						   |JNDI(JndiDataSourceFactory)
 		   自定义数据源（比如dbcp、c3p0、Driud等数据库连接池）：实现DataSourceFactory接口，type为全类名
 	-->
-    <environments default="dev_mysql">
+    <environments default="dev_oracle">
         <environment id="dev_mysql">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">

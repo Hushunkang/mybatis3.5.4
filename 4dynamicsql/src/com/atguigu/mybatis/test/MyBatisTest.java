@@ -89,8 +89,8 @@ public class MyBatisTest {
         try {
             EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
             List<Employee> emps = new ArrayList<>();
-            emps.add(new Employee(null,"Jack",'1',"jack@atguigu.com",new Department(1)));
-            emps.add(new Employee(null,"Rose",'0',"rose@atguigu.com",new Department(1)));
+            emps.add(new Employee(null,"Jack2",'1',"jack2@atguigu.com",new Department(1)));
+            emps.add(new Employee(null,"Jack2",'1',"jack2@atguigu.com",new Department(1)));
             employeeMapperDynamicSQLMapper.addEmps(emps);
             sqlSession.commit();
         } finally {

@@ -156,14 +156,14 @@
 	  			include-property：取值的正确方式${prop},
 	  			#{不能使用这种方式}
 	  -->
-    <sql id="insertColumn">
-        <if test="_databaseId=='mysql'">
-            last_name,gender,email,d_id
-        </if>
-        <if test="_databaseId=='oracle'">
-            employee_id,last_name,email
-        </if>
-    </sql>
+<!--    <sql id="insertColumn">-->
+<!--        <if test="_databaseId=='mysql'">-->
+<!--            last_name,gender,email,d_id-->
+<!--        </if>-->
+<!--        <if test="_databaseId=='oracle'">-->
+<!--            EMPNO,ENAME-->
+<!--        </if>-->
+<!--    </sql>-->
 
     <!-- MySQL下的批量保存方式：1、用foreach遍历实现；2、MySQL还支持values(),(),()语法，Oracle不支持这样的语法 -->
 <!--    <insert id="addEmps">-->
@@ -176,10 +176,11 @@
 <!--        </foreach>-->
 <!--    </insert>--><!-- 推荐使用 -->
     <!-- 这种方式需要设置数据库连接属性，allowMultiQueries=true -->
-    <insert id="addEmps">
+    <insert id="addEmps" databaseId="mysql">
         <foreach collection="emps" item="emp" separator=";">
             insert into tbl_employee(
-            <include refid="insertColumn"></include>
+<!--            <include refid="insertColumn"></include>-->
+            last_name,gender,email,d_id
             )
             values
             (#{emp.lastName},#{emp.gender},#{emp.email},#{emp.dept.id})
@@ -201,11 +202,29 @@
     insert into employees(employee_id,last_name,email)
        select employees_seq.nextval,lastName,email from(
               select 'test_a_01' lastName,'test_a_e01' email from dual
-              union
+              union或者union all
               select 'test_a_02' lastName,'test_a_e02' email from dual
-              union
+              union或者union all
               select 'test_a_03' lastName,'test_a_e03' email from dual
     );
     -->
+<!--    <insert id="addEmps" databaseId="oracle">-->
+<!--        <foreach collection="emps" item="emp" open="begin" close="end;">-->
+<!--            insert into EMP(-->
+<!--            <include refid="insertColumn"></include>-->
+<!--            )-->
+<!--            values(SEQ_EMP.nextval,#{emp.lastName});-->
+<!--        </foreach>-->
+<!--    </insert>-->
+    <insert id="addEmps" databaseId="oracle">
+        insert into EMP(
+        EMPNO,ENAME
+        )
+        <foreach collection="emps" item="emp" separator="union"
+                 open="select SEQ_EMP.nextval,ENAME from("
+                 close=")">
+            select #{emp.lastName} ENAME from dual
+        </foreach>
+    </insert>
 
 </mapper>
