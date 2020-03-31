@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- 配置只扫描业务逻辑控制器，其它的我都不扫描，因为spring mvc只是负责网站跳转的逻辑 -->
+    <context:component-scan base-package="com.atguigu.mybatis" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!--
+		default-servlet-handler将在spring mvc上下文中定义一个DefaultServletHttpRequestHandler
+		它会对进入DispatcherServlet的请求进行筛查，如果发现是没有经过请求映射的请求，就将该请求交由web server默认的Servlet处理
+		如果不是静态资源的请求，才由DispatcherServlet继续处理
+		一般web server默认的Servlet名称都是default
+		若所使用的web server默认的Servlet的servlet名称不是default，则需要通过default-servlet-name属性来显式的指定一哈
+	-->
+    <mvc:default-servlet-handler></mvc:default-servlet-handler>
+
+    <!-- 如果配置了mvc:view-controller标签，@RequestMapping会不起作用，解决办法就是添加mvc:annotation-driven标签 -->
+    <!-- 在实际项目开发中，通常都需配置mvc:annotation-driven标签 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
 
 </beans>
