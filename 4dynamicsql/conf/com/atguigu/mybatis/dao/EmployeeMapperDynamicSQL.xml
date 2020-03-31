@@ -29,9 +29,6 @@
             <if test="lastName != null and lastName != ''">
                 and last_name like #{lastName}
             </if>
-            <if test="email != null and email.trim() != ''">
-                and email=#{email}
-            </if>
             <!--
             OGNL表达式会进行数字与字符串转换判断  0 == "0"
             如果gender为char类型，必须要这样写gender == '0'
@@ -44,6 +41,9 @@
             -->
             <if test="gender == '0' or gender == '1'">
                 and gender=#{gender}
+            </if>
+            <if test="email != null and email.trim() != ''">
+                and email=#{email}
             </if>
         </where>
     </select>
@@ -59,19 +59,40 @@
         suffixOverrides=""：后缀重写，去掉整个字符串后面多余的字符串
         -->
         <trim prefix="where" suffixOverrides="and">
-            <if test="id!=null">
+            <if test="id != null">
                 id=#{id} and
             </if>
-            <if test="lastName!=null &amp;&amp; lastName!=&quot;&quot;">
+            <if test="lastName != null &amp;&amp; lastName != &quot;&quot;">
                 last_name like #{lastName} and
             </if>
-            <if test="email!=null and email.trim()!=&quot;&quot;">
-                email=#{email} and
-            </if>
-            <if test="gender==0 or gender==1">
+            <if test="gender == '0' or gender == '1'">
                 gender=#{gender} and
             </if>
+            <if test="email != null and email.trim() != &quot;&quot;">
+                email=#{email} and
+            </if>
         </trim>
+    </select>
+
+    <select id="getEmpsByConditionChoose" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from tbl_employee
+        <where>
+            <!-- 如果带了id就用id查，如果带了lastName就用last_name查，只会进入选择结构的其中一个分支 -->
+            <choose>
+                <when test="id != null">
+                    id=#{id}
+                </when>
+                <when test="lastName != null &amp;&amp; lastName.trim() != &quot;&quot;">
+                    last_name like #{lastName}
+                </when>
+                <when test="email != null &amp;&amp; email.trim() != &quot;&quot;">
+                    email=#{email}
+                </when>
+                <otherwise>
+                    gender=#{gender}
+                </otherwise>
+            </choose>
+        </where>
     </select>
 
 </mapper>

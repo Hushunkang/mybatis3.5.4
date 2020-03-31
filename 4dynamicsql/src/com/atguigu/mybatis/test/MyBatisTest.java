@@ -32,9 +32,10 @@ public class MyBatisTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
-            Employee employee = new Employee(1,"%m%",null,"   ");
+            Employee employee = new Employee(null,null,'0',"");
 //            List<Employee> emps = employeeMapperDynamicSQLMapper.getEmpsByConditionIf(employee);
-            List<Employee> emps = employeeMapperDynamicSQLMapper.getEmpsByConditionTrim(employee);
+//            List<Employee> emps = employeeMapperDynamicSQLMapper.getEmpsByConditionTrim(employee);
+            List<Employee> emps = employeeMapperDynamicSQLMapper.getEmpsByConditionChoose(employee);
 
             //查询的时候如果某些条件没带可能sql拼装会有问题
             //解决方案1、给where后面加上1=1，后面每个if分支都是and ***
