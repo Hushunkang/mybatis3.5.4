@@ -165,7 +165,7 @@
         </if>
     </sql>
 
-    <!-- MySQL下的批量保存方式：1、用foreach遍历实现；2、MySQL还支持values(),(),()语法 -->
+    <!-- MySQL下的批量保存方式：1、用foreach遍历实现；2、MySQL还支持values(),(),()语法，Oracle不支持这样的语法 -->
 <!--    <insert id="addEmps">-->
 <!--        insert into tbl_employee(-->
 <!--        <include refid="insertColumn"></include>-->
@@ -185,5 +185,27 @@
             (#{emp.lastName},#{emp.gender},#{emp.email},#{emp.dept.id})
         </foreach>
     </insert><!-- 不推荐使用 -->
+
+    <!--
+    Oracle下的批量保存方式
+    Oracle不支持values(),(),()语法
+    Oracle支持的批量方式
+    1、多个insert语句放在begin-end;里面，如下示例
+    begin
+        insert into employees(employee_id,last_name,email)
+        values(employees_seq.nextval,'test_001','test_001@atguigu.com');
+        insert into employees(employee_id,last_name,email)
+        values(employees_seq.nextval,'test_002','test_002@atguigu.com');
+    end;
+    2、利用中间表
+    insert into employees(employee_id,last_name,email)
+       select employees_seq.nextval,lastName,email from(
+              select 'test_a_01' lastName,'test_a_e01' email from dual
+              union
+              select 'test_a_02' lastName,'test_a_e02' email from dual
+              union
+              select 'test_a_03' lastName,'test_a_e03' email from dual
+    );
+    -->
 
 </mapper>
