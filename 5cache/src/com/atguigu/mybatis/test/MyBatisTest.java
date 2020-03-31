@@ -85,8 +85,8 @@ public class MyBatisTest {
      * 					    设置成STATEMENT表示可以禁用一级缓存
      *
      * mybatis与第三方缓存整合：
-     *	1）、导入第三方缓存包即可
-     *	2）、导入与第三方缓存整合的适配包，官网有包
+     *	1）、导入第三方缓存包ehcache-core-2.6.8.jar
+     *	2）、导入与第三方缓存整合的适配包，适配包在mybatis在github上面地址里面有下载mybatis-ehcache-1.0.3.jar
      *	3）、***Mapper.xml中使用自定义缓存
      *		 <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
      *

@@ -10,6 +10,9 @@ resultType：查询的结果映射到哪个类
 -->
 <mapper namespace="com.atguigu.mybatis.dao.DepartmentMapper">
 
+    <!-- 引用缓存namespace表示指定和哪个命名空间下的缓存一样 -->
+    <cache-ref namespace="com.atguigu.mybatis.dao.EmployeeMapper"/>
+
     <select id="getDeptById" resultType="com.atguigu.mybatis.bean.Department">
         select id,dept_name departmentName from tbl_dept where id=#{id}
     </select>
