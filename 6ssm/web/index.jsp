@@ -12,5 +12,6 @@
   </head>
   <body>
   <a href="employee/getemps">查询所有员工</a>
+  <a href="employee/addEmp">添加员工</a>
   </body>
 </html>

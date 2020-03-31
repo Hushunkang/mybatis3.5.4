@@ -12,4 +12,8 @@
         select * from tbl_employee
     </select>
 
+    <insert id="addEmp">
+        insert into tbl_employee(last_name,gender,email,d_id) values(#{emp.lastName},#{emp.gender},#{emp.email},#{emp.dept.id})
+    </insert>
+
 </mapper>
