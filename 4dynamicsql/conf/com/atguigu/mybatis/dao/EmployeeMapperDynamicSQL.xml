@@ -48,4 +48,30 @@
         </where>
     </select>
 
+    <select id="getEmpsByConditionTrim" resultType="emp">
+        select * from tbl_employee
+        <!--
+        后面多出的and或者or，where标签不能解决
+        使用trim标签可以解决这种问题，trim标签体中是整个字符串拼串后的结果
+        prefix=""：给拼串后的整个字符串加一个前缀
+        prefixOverrides=""：前缀重写，去掉整个字符串前面多余的字符串
+        suffix=""：给拼串后的整个字符串加一个后缀
+        suffixOverrides=""：后缀重写，去掉整个字符串后面多余的字符串
+        -->
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id!=null">
+                id=#{id} and
+            </if>
+            <if test="lastName!=null &amp;&amp; lastName!=&quot;&quot;">
+                last_name like #{lastName} and
+            </if>
+            <if test="email!=null and email.trim()!=&quot;&quot;">
+                email=#{email} and
+            </if>
+            <if test="gender==0 or gender==1">
+                gender=#{gender} and
+            </if>
+        </trim>
+    </select>
+
 </mapper>
