@@ -13,8 +13,6 @@ import java.util.List;
  */
 public interface EmployeeMapperDynamicSQL {
 
-     List<Employee> getEmpsTestInnerParameter(Employee employee);
-
     //employee携带了哪些字段，查询条件就带上这些字段
      List<Employee> getEmpsByConditionIf(Employee employee);
 
@@ -28,5 +26,7 @@ public interface EmployeeMapperDynamicSQL {
      List<Employee> getEmpsByConditionForeach(@Param("ids")List<Integer> ids);
 
      void addEmps(@Param("emps")List<Employee> emps);
+
+    List<Employee> getEmpsTestInnerParameter(Employee employee);
 
 }

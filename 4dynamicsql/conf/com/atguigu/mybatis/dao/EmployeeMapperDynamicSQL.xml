@@ -141,7 +141,7 @@
                    遍历list集合的时候index就是索引，item就是当前值
                    遍历map集合的时候index不表示索引，而是表示map的key，item就是map的value
             #{变量名}：能取出变量值，也就是当前遍历出的数据元素
-          -->
+        -->
         <foreach collection="ids" item="item_id" separator=","
                  open="where id in(" close=")" index="i">
             #{item_id}
@@ -156,14 +156,14 @@
 	  			include-property：取值的正确方式${prop},
 	  			#{不能使用这种方式}
 	  -->
-<!--    <sql id="insertColumn">-->
-<!--        <if test="_databaseId=='mysql'">-->
-<!--            last_name,gender,email,d_id-->
-<!--        </if>-->
-<!--        <if test="_databaseId=='oracle'">-->
-<!--            EMPNO,ENAME-->
-<!--        </if>-->
-<!--    </sql>-->
+    <sql id="insertColumn">
+        <if test="_databaseId == 'mysql'">
+            last_name,gender,email,d_id
+        </if>
+        <if test="_databaseId == 'oracle'">
+            EMPNO,ENAME
+        </if>
+    </sql>
 
     <!-- MySQL下的批量保存方式：1、用foreach遍历实现；2、MySQL还支持values(),(),()语法，Oracle不支持这样的语法 -->
 <!--    <insert id="addEmps">-->
@@ -179,8 +179,7 @@
     <insert id="addEmps" databaseId="mysql">
         <foreach collection="emps" item="emp" separator=";">
             insert into tbl_employee(
-<!--            <include refid="insertColumn"></include>-->
-            last_name,gender,email,d_id
+            <include refid="insertColumn"></include>
             )
             values
             (#{emp.lastName},#{emp.gender},#{emp.email},#{emp.dept.id})
@@ -218,7 +217,7 @@
 <!--    </insert>-->
     <insert id="addEmps" databaseId="oracle">
         insert into EMP(
-        EMPNO,ENAME
+        <include refid="insertColumn"></include>
         )
         <foreach collection="emps" item="emp" separator="union"
                  open="select SEQ_EMP.nextval,ENAME from("
@@ -226,5 +225,31 @@
             select #{emp.lastName} ENAME from dual
         </foreach>
     </insert>
+
+    <!--
+    mybatis默认的两个内置参数，不只是方法传递过来的sql参数可以被用来判断，取值等操作。。。mybatis默认还有两个内置参数
+	_parameter：代表整个方法传递过来的sql参数
+	 		    单个参数：_parameter就是这个参数
+	 		    多个参数：多个参数会被封装为一个map，_parameter就是这个map
+	_databaseId：若在mybatis的全局配置文件中配置了databaseIdProvider标签，_databaseId表示数据库厂商的标识的别名
+	-->
+    <select id="getEmpsTestInnerParameter" resultType="com.atguigu.mybatis.bean.Employee">
+        <!-- bind：可以将OGNL表达式的值绑定到一个变量中，方便后来引用这个变量的值 -->
+        <bind name="_lastName" value="'%'+lastName+'%'"/>
+        <if test="_databaseId == 'mysql'">
+            select * from tbl_employee
+            <if test="_parameter != null">
+                <!-- where last_name like '%#{lastName}%' 这种方式直接不行 -->
+                <!-- where last_name like '%${lastName}%' 这种方式可以，但是存在安全问题，不推荐使用 -->
+                where last_name like #{_lastName}<!-- 模糊查询推荐使用的方式，bind标签 -->
+            </if>
+        </if>
+        <if test="_databaseId == 'oracle'">
+            select EMPNO id,ENAME lastName from EMP
+            <if test="_parameter != null">
+                where ENAME like #{_parameter.lastName}
+            </if>
+        </if>
+    </select>
 
 </mapper>

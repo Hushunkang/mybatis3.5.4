@@ -98,4 +98,21 @@ public class MyBatisTest {
         }
     }
 
+    @Test
+    public void test5() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
+            Employee employee = new Employee();
+            employee.setLastName("R");
+            List<Employee> emps = employeeMapperDynamicSQLMapper.getEmpsTestInnerParameter(employee);
+            for (Employee emp : emps) {
+                System.out.println(emp);
+            }
+        } finally {
+            sqlSession.close();
+        }
+    }
+
 }
