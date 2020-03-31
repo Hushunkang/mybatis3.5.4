@@ -48,7 +48,20 @@ public class MyBatisTest {
         } finally {
             sqlSession.close();
         }
+    }
 
+    @Test
+    public void test2() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
+            Employee employee = new Employee(1,"TomUpdate",'0',"tom@atguigu.com");
+            employeeMapperDynamicSQLMapper.updateEmp(employee);
+            sqlSession.commit();
+        } finally {
+            sqlSession.close();
+        }
     }
 
 }

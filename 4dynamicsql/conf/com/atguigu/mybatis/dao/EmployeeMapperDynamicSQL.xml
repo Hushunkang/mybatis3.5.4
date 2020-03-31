@@ -102,7 +102,7 @@
             <if test="lastName != null">
                 last_name=#{lastName},
             </if>
-            <if test="gender != null">
+            <if test="gender != null and (gender == '0' or gender == '1')">
                 gender=#{gender},
             </if>
             <if test="email != null">
@@ -127,5 +127,25 @@
         where id=#{id}
         -->
     </update>
+
+    <select id="getEmpsByConditionForeach" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from tbl_employee
+        <!--
+            collection：表示要遍历的集合
+            细节：list类型的sql参数会特殊处理，封装在map中，map的key就叫list
+            item：表示遍历集合中的每一个数据元素赋值给item_id
+            separator：表示每个元素之间的分隔符
+            open：拼接结果的开始标识
+            close：拼接结果的结束标识
+            index：索引
+                   遍历list集合的时候index就是索引，item就是当前值
+                   遍历map集合的时候index不表示索引，而是表示map的key，item就是map的value
+            #{变量名}：能取出变量值，也就是当前遍历出的数据元素
+          -->
+        <foreach collection="ids" item="item_id" separator=","
+                 open="where id in(" close=")" index="i">
+            #{item_id}
+        </foreach>
+    </select>
 
 </mapper>
