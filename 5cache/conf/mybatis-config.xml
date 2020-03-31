@@ -24,6 +24,7 @@
         <!-- 最好是显示的指定每一个我们需要更改的配置项，即使他是默认滴，也配置一哈，避免版本更新带来问题 -->
         <setting name="lazyLoadingEnabled" value="true"/>
         <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/><!-- 开启mybatis的二级缓存 -->
     </settings>
 
     <!--

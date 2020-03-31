@@ -2,6 +2,8 @@ package com.atguigu.mybatis.bean;
 
 import org.apache.ibatis.type.Alias;
 
+import java.io.Serializable;
+
 /**
  * @author hskBeginner Email：2752962035@qq.com
  * @version 1.0
@@ -9,7 +11,9 @@ import org.apache.ibatis.type.Alias;
  * @create 2020年03月28日 18时06分17秒
  */
 @Alias("emp")
-public class Employee {
+public class Employee implements Serializable {
+
+    private static final long serialVersionUID = -1586826091673542093L;
 
     private Integer id;
     private String lastName;

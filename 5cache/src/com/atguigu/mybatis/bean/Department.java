@@ -1,5 +1,6 @@
 package com.atguigu.mybatis.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,9 @@ import java.util.List;
  * @description
  * @create 2020年03月30日 15时12分20秒
  */
-public class Department {
+public class Department implements Serializable {
+
+    private static final long serialVersionUID = 4056536981905764933L;
 
     private Integer id;
     private String departmentName;
