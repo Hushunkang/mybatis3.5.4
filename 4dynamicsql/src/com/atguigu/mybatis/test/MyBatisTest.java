@@ -1,5 +1,6 @@
 package com.atguigu.mybatis.test;
 
+import com.atguigu.mybatis.bean.Department;
 import com.atguigu.mybatis.bean.Employee;
 import com.atguigu.mybatis.dao.EmployeeMapperDynamicSQL;
 import org.apache.ibatis.io.Resources;
@@ -10,6 +11,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -58,6 +61,37 @@ public class MyBatisTest {
             EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
             Employee employee = new Employee(1,"TomUpdate",'0',"tom@atguigu.com");
             employeeMapperDynamicSQLMapper.updateEmp(employee);
+            sqlSession.commit();
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test3() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
+            List<Employee> emps = employeeMapperDynamicSQLMapper.getEmpsByConditionForeach(Arrays.asList(1, 8));
+            for (Employee emp : emps) {
+                System.out.println(emp);
+            }
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void test4() throws IOException {
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            EmployeeMapperDynamicSQL employeeMapperDynamicSQLMapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
+            List<Employee> emps = new ArrayList<>();
+            emps.add(new Employee(null,"Jack",'1',"jack@atguigu.com",new Department(1)));
+            emps.add(new Employee(null,"Rose",'0',"rose@atguigu.com",new Department(1)));
+            employeeMapperDynamicSQLMapper.addEmps(emps);
             sqlSession.commit();
         } finally {
             sqlSession.close();

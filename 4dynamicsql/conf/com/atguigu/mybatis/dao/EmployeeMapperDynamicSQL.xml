@@ -148,4 +148,42 @@
         </foreach>
     </select>
 
+    <!--
+	  	抽取可重用的sql片段。方便后面引用
+	  	1、sql抽取：经常将要查询的列名，或者插入用的列名抽取出来方便引用
+	  	2、include来引用已经抽取的sql：
+	  	3、include还可以自定义一些property，sql标签内部就能使用自定义的属性
+	  			include-property：取值的正确方式${prop},
+	  			#{不能使用这种方式}
+	  -->
+    <sql id="insertColumn">
+        <if test="_databaseId=='mysql'">
+            last_name,gender,email,d_id
+        </if>
+        <if test="_databaseId=='oracle'">
+            employee_id,last_name,email
+        </if>
+    </sql>
+
+    <!-- MySQL下的批量保存方式：1、用foreach遍历实现；2、MySQL还支持values(),(),()语法 -->
+<!--    <insert id="addEmps">-->
+<!--        insert into tbl_employee(-->
+<!--        <include refid="insertColumn"></include>-->
+<!--        )-->
+<!--        values-->
+<!--        <foreach collection="emps" item="emp" separator=",">-->
+<!--            (#{emp.lastName},#{emp.gender},#{emp.email},#{emp.dept.id})-->
+<!--        </foreach>-->
+<!--    </insert>--><!-- 推荐使用 -->
+    <!-- 这种方式需要设置数据库连接属性，allowMultiQueries=true -->
+    <insert id="addEmps">
+        <foreach collection="emps" item="emp" separator=";">
+            insert into tbl_employee(
+            <include refid="insertColumn"></include>
+            )
+            values
+            (#{emp.lastName},#{emp.gender},#{emp.email},#{emp.dept.id})
+        </foreach>
+    </insert><!-- 不推荐使用 -->
+
 </mapper>
