@@ -55,6 +55,7 @@
     <!--
     扫描所有的mybatis的dao层Mapper接口的实现，让这些Mapper接口的实现能够自动注入
     base-package：指定mybatis的dao层Mapper接口的包名
+    说明：这一步其实是将mybatis动态生成的dao层Mapper接口的实现类注册到spring ioc容器里面，要用的话就di
     -->
     <mybatis-spring:scan base-package="com.atguigu.mybatis.dao"/>
     <!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
