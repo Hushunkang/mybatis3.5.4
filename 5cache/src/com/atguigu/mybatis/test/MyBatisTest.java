@@ -89,8 +89,6 @@ public class MyBatisTest {
      *	2）、导入与第三方缓存整合的适配包，适配包在mybatis在github上面地址里面有下载mybatis-ehcache-1.0.3.jar
      *	3）、***Mapper.xml中使用自定义缓存
      *		 <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
-     *
-     *
      */
     @Test
     public void test2() throws IOException {

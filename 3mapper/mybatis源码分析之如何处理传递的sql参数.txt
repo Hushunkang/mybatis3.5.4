@@ -93,7 +93,7 @@ names：{0=lastName,1=gender,2=arg2}（key-value：0->lastName,1->gender,2->arg2
 说明：上述的参数值有一些情况
 情况1：若sql参数标记了@Param注解，那么参数值就是@Param注解的value
 情况2：若sql参数没有标记@Param注解
-情况2_1：如果在mybatis的全局配置文件中设置了useActualParamName，即是否使用dao层Mapper接口中方法的形参的参数名作为此处的name，但必须使用jdk1.8及以上版本，本例子中没配置
+情况2_1：如果在mybatis的全局配置文件中设置了useActualParamName，即是否使用dao层Mapper接口中方法的形参的参数名作为此处的name，但必须使用jdk1.8及以上版本，默认值是true
 情况2_2：使用map.size()（即为use the parameter index as the name ("0", "1", ...)，处理第一个sql参数的时候是0，处理第二个sql参数的时候是1，依次类推）作为此处的name
 2、最后赋值给names（即names的初始化），names = Collections.unmodifiableSortedMap(map);
 3、ParamNameResolver类中public Object getNamedParams(Object[] args)方法

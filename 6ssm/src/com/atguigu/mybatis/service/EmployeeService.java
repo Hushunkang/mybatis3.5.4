@@ -30,6 +30,7 @@ public class EmployeeService {
 		mapper.addEmp(employee);
 		System.out.println(1 / 0);
 		System.out.println("造个异常看能不能回滚。。。");
+		//TODO 67.尚硅谷_MyBatis_逆向工程_mbg简介
 	}
 
 }
