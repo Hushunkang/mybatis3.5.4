@@ -6,7 +6,7 @@ import org.apache.ibatis.type.Alias;
  * @author hskBeginner Email：2752962035@qq.com
  * @version 1.0
  * @description
- * @create 2020年03月28日 18时06分17秒
+ * @create 2020年03月28日
  */
 @Alias("emp")
 public class Employee {

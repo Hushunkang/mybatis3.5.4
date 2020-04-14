@@ -16,7 +16,7 @@ import java.io.InputStream;
  * @author hskBeginner Email：2752962035@qq.com
  * @version 1.0
  * @description
- * @create 2020年03月28日 18时26分32秒
+ * @create 2020年03月28日
  */
 public class MyBatisTest {
 

@@ -4,7 +4,7 @@ package com.atguigu.mybatis.bean;
  * @author hskBeginner Email：2752962035@qq.com
  * @version 1.0
  * @description
- * @create 2020年03月28日 18时06分17秒
+ * @create 2020年03月28日
  */
 public class Employee {
 

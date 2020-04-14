@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Select;
  * @author hskBeginner Email：2752962035@qq.com
  * @version 1.0
  * @description
- * @create 2020年03月29日 12时02分17秒
+ * @create 2020年03月29日
  */
 public interface EmployeeMapperAnnotation {
 
