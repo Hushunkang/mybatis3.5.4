@@ -56,26 +56,26 @@ public class MyBatisTest {
      * 3、两次使用的SqlSession对象相同，但是两次查询之间执行了增删改操作（原理是因为执行的增删改操作可能对当前数据有影响，相当于一级缓存中的数据有可能是过时的)
      * 4、两次使用的SqlSession对象相同，但是手动清除一级缓存（清空缓存）
      *
-     * 如果多个sqlSession对象之间需要共享缓存，则需要使用到二级缓存，二级缓存实现了多个SqlSession对象之间共享缓存
+     * 如果多个SqlSession对象之间需要共享缓存，则需要使用到二级缓存，二级缓存实现了多个SqlSession对象之间共享缓存
      * 如何理解二级缓存实现了多个SqlSession对象之间共享缓存
-     * 若某个namespace开启了二级缓存的功能，不同的SqlSession对象去操作这个namespace下的某个查询操作，并且最终执行的查询sql是一样的
+     * 若某个Mapper开启了二级缓存的功能，不同的SqlSession对象去操作这个Mapper下的某个查询操作，并且最终执行的查询sql是一样的
      * 并且通过“只有sql会话提交或者关闭以后，一级缓存中的数据才会被转移到二级缓存中”
      * 这种手段将某一个SqlSession对象中的数据，即一级缓存中的数据转移到了二级缓存
-     * 以后这个namespace下的所有的SqlSession对象只要是最终执行的查询sql是一样的
+     * 以后这个Mapper下的所有的SqlSession对象只要是最终执行的查询sql是一样的
      * 查询会拿到二级缓存中的数据，不会发送sql查询数据库，这就是二级缓存实现了多个SqlSession对象之间共享缓存
      * 说白了就是共享二级缓存！！！
-     * mybatis二级缓存：全局缓存，namespace级别的缓存，一个namespace对应着一个mybatis的sql映射文件，一个namespace对应着一个二级缓存
+     * mybatis二级缓存：全局缓存，Mapper级别的缓存，一个Mapper对应着一个mybatis的sql映射文件，一个Mapper对应着一个二级缓存
      * 工作机制：
      *  1、一个sql会话，查询一条数据，这个数据就会被放在当前sql会话的一级缓存中
      * 	2、如果sql会话关闭，当前sql会话的一级缓存中的数据就会被保存到二级缓存中，新的sql会话查询信息，就可以参照二级缓存中的数据
-     * 	3、mybatis的二级缓存之namespace级别的缓存
+     * 	3、mybatis的二级缓存之Mapper级别的缓存
      * 	                EmployeeMapper===>Employee
      * 	                DepartmentMapper===>Department
-     * 			        不同namespace查出的数据会放在自己对应的二级缓存（缓存本质也是对象）中
+     * 			        不同Mapper查出的数据会放在自己对应的二级缓存（缓存本质也是对象）中
      *
      * 	使用：
      * 	1）、在mybatis的全局配置文件中配置<setting name="cacheEnabled" value="true"/>
-     * 	2）、去***Mapper.xml中配置使用二级缓存<cache></cache>，在哪个mybatis的sql映射文件中配置了这个cache标签，哪个namespace就有二级缓存的功能，否则没有二级缓存的功能
+     * 	2）、去***Mapper.xml中配置使用二级缓存<cache></cache>，在哪个mybatis的sql映射文件中配置了这个cache标签，哪个Mapper就有二级缓存的功能，否则没有二级缓存的功能
      * 	3）、我们的POJO类需要实现序列化接口
      *
      * 	开启mybatis二级缓存的最终效果：
@@ -206,7 +206,7 @@ public class MyBatisTest {
             //第一次查询是从数据库中获取的数据，发送sql Cache Hit Ratio 缓存命中率 0
             Employee employee1 = employeeMapper1.getEmpById(1);//发送sql查询数据库，查询出的数据放到一级缓存里面，完成查询任务
             System.out.println(employee1);
-//            sqlSession1.close();//注意：只有sql会话提交或者关闭以后，一级缓存中的数据才会被转移到二级缓存中
+            sqlSession1.close();//注意：只有sql会话提交或者关闭以后，一级缓存中的数据才会被转移到二级缓存中
 
             EmployeeMapper employeeMapper2 = sqlSession2.getMapper(EmployeeMapper.class);
             //第二次查询是从二级缓存中获取的数据，并没有重新发送sql Cache Hit Ratio 缓存命中率 1/2
